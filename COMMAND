@@ -1,0 +1,2 @@
+nohup /home/remo/src/ncbi-blast-2.2.27+/bin/blastn -query ../GENOMES/HR.fasta -db ../GENOMES/Ciona_intestinalis.KH.70.dna_rm.toplevel -task blastn -out HR_vs_CI_rm_top.out -evalue 0.01 -word_size 6 -culling_limit 1 -num_threads 20 &
+
