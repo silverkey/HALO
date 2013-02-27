@@ -1,0 +1,1 @@
+nohup /home/remo/src/repeatmasker/RepeatMasker/RepeatMasker -species tunicates -gff -s -no_is /media/LOCAL_DATA_2/ANALYSIS/HALO/REPEAT/ciona/CI_KH.fasta > rm.nohup &
