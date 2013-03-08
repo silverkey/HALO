@@ -1,0 +1,1 @@
+ps aux|grep blast|perl -e 'while(<>){@proc=split(/\s+/,$_);system("kill -s kill $proc[1]");}'
