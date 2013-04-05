@@ -25,7 +25,11 @@ get.ranges.from.gff = function(gff.filename,fname) {
 # It takes the ID of the match to test
 assign.class = function(x) {
   class = 'NA'
-  types = res[res$index==x,]$h.type
+  types = unique(res[res$index==x,]$h.type)
+  fnames = unique(res[res$index==x,]$h.fname)
+  if(sum(types %in% repetitive)) {
+      class = 'repeat'
+  }
   if(sum(types %in% genic)) {
     if(sum(types %in% exonic)) {
       class = 'exonic'
@@ -34,8 +38,15 @@ assign.class = function(x) {
       class = 'intronic'
     }
   }
-  if(sum(types %in% repetitive)) {
-      class = 'repeat'
+  if(class == 'NA') {
+    if(fnames == 'RFAM') {
+      class = 'RFAM'
+    }
+  }
+  if(class == 'intronic') {
+    if(fnames == 'RFAM') {
+      class = 'RFAM'
+    }
   }
   as.character(class)
 }
@@ -44,7 +55,6 @@ get.attribute.value = function(df,key) {
   key = paste(key,'=',sep='')
   val = lapply(as.character(df$attribute),function(x)sub(key,'',unlist(strsplit(x,';'))[grep(key,unlist(strsplit(x,';')))]))
   unlist(val)
-
 }
 
 # Target file
@@ -52,7 +62,7 @@ targetfile = 'target'
 target = read.table(file=targetfile,sep='\t',head=T,comment.char='',quote='')
 
 # Load the query GFF
-qfile = 'HR_vs_CI_ghost_rm_megablast_CI.gff'
+qfile = 'HR_vs_CI_ghost_rm_blast_ws6_Ci.gff'
 
 # N.B.: the ID field in the attribute of the GFF has been
 # created as numeric autoincrement starting by 1 in the perl
