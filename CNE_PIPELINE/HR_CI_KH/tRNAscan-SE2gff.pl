@@ -7,11 +7,7 @@ use lib '/home/remo/src/bioperl-live';
 use lib '.';
 use tRNAscanSE;
 
-# You need the modified module tRNAscanSE.pm into the current directory!!!
-
-my $usage = "\n\tperl $0 [tRNAscan-SE output]\n
-The modified module tRNAscanSE.pm must be into the current directory!\n\n";
-
+my $usage = "\n\tperl $0 [fasta]\n\n";
 die $usage unless scalar(@ARGV) == 1;
 die $usage unless -e $ARGV[0];
 
