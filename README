@@ -1,0 +1,53 @@
+# -----------------
+# RFAM mapping
+# -----------------
+
+# Make a blastdb of the genome to use as a db
+makeblastdb -in CI_KH_rm_1000bp.fa -dbtype nucl
+
+# Run the blast using the Rfam.fasta as a query
+nohup /home/remo/src/ncbi-blast-2.2.27+/bin/blastn -query Rfam.fasta -db CI_KH_rm_1000bp.fa -evalue 0.001 -num_threads 10 -out CI_KH_rm_1000bp_Rfam.blastout &
+
+# Convert the output in GFF
+nohup perl comparative_blast_to_gff.pl CI_KH_rm_1000bp_Rfam.blastout RFAM_MEGABLAST RFAM CI &
+
+
+# -----------------
+# tRNAs mapping
+# -----------------
+
+# Create a folder ANALYSIS into the tRNAscan-SE folder to run the analysis
+# Run tRNAscan-SE from the program folder (there are problems I could not solve in the path)
+nohup ./tRNAscan-SE -o ANALYSIS/HR_rm_1000bp_trnascan.out ANALYSIS/HR_rm_1000bp.fa &
+
+# Convert the output in GFF
+nohup perl tRNAscan-SE2gff.pl HR_rm_1000bp_trnascan.out
+
+
+# -----------------
+# Repeats masking
+# -----------------
+
+# Masking repeat generates a GFF output named HR.fasta.out.gff
+nohup /home/remo/src/repeatmasker/RepeatMasker/RepeatMasker -species tunicates -gff -s -no_is /media/LOCAL_DATA_2/ANALYSIS/HALO/REPEAT/halo/HR.fasta > rm.nohup &
+
+
+# -----------------
+# Run BLAST analysis
+# -----------------
+
+# In this case we use word length 6
+nohup /root/src/ncbi-blast-2.2.27+/bin/blastn -query HR_rm_1000bp.fa -db CI_KH_rm_1000bp -out HR_vs_CI_ghost_rm_blast_ws6.out -evalue 0.01 -culling_limit 1 -num_threads 4 -word_size 6 -task blastn &
+
+# Convert the output to GFF format
+nohup perl comparative_blast_to_gff.pl HR_vs_CI_ghost_rm_blast_ws6.out BLAST_WL4 HR CI
+
+
+# -----------------
+# Mapping blast hits to genomic features
+# -----------------
+
+# The R script has to be modified to know the names of the files to use
+nohup R CMD BATCH overlap_gff_vs_gffs.R
+
+
